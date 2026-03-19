@@ -24,14 +24,14 @@ export class ProfilesService {
   ];
 
   create(createProfileDto: CreateProfileDto) {
-    const newPost = {
+    const newProfile = {
       id: randomUUID(),
       name: createProfileDto.name,
       description: createProfileDto.description,
     };
-    this.profiles.push(newPost);
+    this.profiles.push(newProfile);
     return {
-      data: newPost,
+      data: newProfile,
       message: 'Added successfully',
     };
   }
@@ -40,13 +40,38 @@ export class ProfilesService {
     return this.profiles;
   }
 
-  findOne(id: number) {
-    return this.profiles[id];
+  findOne(id: string) {
+    const data = this.profiles.find((item) => {
+      return item.id === id;
+    });
+    console.log(data);
+    if (!data) return 'No data';
+    return data;
   }
 
-  update(id: number, updateProfileDto: UpdateProfileDto) {
-    updateProfileDto;
-    return `This action updates a #${id} profile`;
+  update(id: string, updateProfileDto: UpdateProfileDto) {
+    const obj = this.profiles.find((item) => {
+      return item.id === id;
+    });
+
+    if (!obj) return 'No user found';
+
+    if (updateProfileDto.name !== undefined) {
+      if (!obj) return;
+      obj.name = updateProfileDto.name;
+    }
+
+    if (updateProfileDto.description !== undefined) {
+      if (!obj) return;
+      obj.description = updateProfileDto.description;
+    }
+
+    // this.profiles.splice(objIndex, 1, obj!);
+
+    return {
+      data: obj,
+      message: 'Updated successfully',
+    };
   }
 
   remove(id: number) {
