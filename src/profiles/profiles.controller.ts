@@ -11,11 +11,13 @@ import {
   HttpStatus,
   HttpException,
   ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { ProfilesService } from './profiles.service';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import type { UUID } from 'crypto';
+import { ProfilesGuard } from './profiles.guard';
 
 @Controller('profiles')
 export class ProfilesController {
@@ -29,6 +31,7 @@ export class ProfilesController {
 
   @Get()
   // @HttpCode(HttpStatus.OK);
+  @UseGuards(ProfilesGuard)
   findAll(@Query('name') name: string) {
     return this.profilesService.findAll();
   }
