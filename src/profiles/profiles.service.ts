@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { randomUUID } from 'crypto';
@@ -45,7 +45,7 @@ export class ProfilesService {
       return item.id === id;
     });
     console.log(data);
-    if (!data) return 'No data';
+    if (!data) throw new NotFoundException('User user data found');
     return data;
   }
 
@@ -54,7 +54,7 @@ export class ProfilesService {
       return item.id === id;
     });
 
-    if (!obj) return 'No user found';
+    if (!obj) throw new NotFoundException('User not found to update the data');
 
     if (updateProfileDto.name !== undefined) {
       if (!obj) return;
@@ -74,7 +74,13 @@ export class ProfilesService {
     };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} profile`;
+  remove(id: string) {
+    const findArrIndex = this.profiles.findIndex((item) => item.id === id);
+
+    const dt = this.profiles.splice(findArrIndex, 1);
+    if (!dt) {
+      throw new NotFoundException('No user found to delete');
+    }
+    return dt;
   }
 }
